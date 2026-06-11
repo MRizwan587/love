@@ -4,7 +4,12 @@ const path = require('path');
 
 const app = express();
 app.use(express.json());
-app.use(express.static('.'));
+app.use(express.static(path.join(__dirname)));
+
+// Root route - serve index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Save result
 app.post('/save-result', (req, res) => {
