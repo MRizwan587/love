@@ -426,8 +426,7 @@ body{font-family:'Poppins',sans-serif;background:var(--cream);min-height:100vh;o
     <div class="love-letter-body" id="loveLetterBody"></div>
   </div>
 
-  <button class="share-btn" onclick="downloadResult()">📥 Apna Nateeja Save Karo (Sirf Rizwan ke Liye)</button>
-  <div class="save-status" id="saveStatus"></div>
+  <div class="save-status" id="saveStatus">Nateeja server par save ho raha hai...</div>
 
 </div><!-- end resultPage -->
 
@@ -530,11 +529,10 @@ document.querySelectorAll('.opt-btn').forEach(btn=>{
   btn.addEventListener('click',function(){
     const card=this.closest('.q-card');
     const qNum=parseInt(card.dataset.q);
-    if(answers[qNum-1]!==null)return;
     const sc=parseInt(this.dataset.score);
     const val=this.dataset.val;
     answers[qNum-1]={val,score:sc,text:this.querySelector('.opt-text').textContent,qIdx:qNum-1};
-    card.querySelectorAll('.opt-btn').forEach(b=>b.style.pointerEvents='none');
+    // Animation plays on every click
     if(sc===1){
       this.classList.add('sel-love');
       spawnLove(this);
@@ -688,44 +686,11 @@ async function saveResultToServer(pct, badAnswers, loveLetter){
       body:JSON.stringify(payload)
     });
     if(res.ok){
-      document.getElementById('saveStatus').textContent='✅ Nateeja server par save ho gaya! /result.json se dekh sako ge.';
-    }else{
-      localSave(payload);
+      document.getElementById('saveStatus').textContent='✅ Nateeja server par save ho gaya! /all-results par dekh sako ge.';
     }
   }catch(e){
-    localSave(payload);
+    console.error('Save error:', e);
   }
-}
-
-function localSave(payload){
-  try{
-    const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='rizwan-result-'+new Date().toISOString().slice(0,10)+'.json';
-    a.click();
-    document.getElementById('saveStatus').textContent='📥 result.json download ho gaya — yeh file tumhara nateeja hai!';
-  }catch(e){}
-}
-
-// DOWNLOAD (manual)
-function downloadResult(){
-  const goodCount=answers.filter(a=>a&&a.score===1).length;
-  const pct=Math.round((goodCount/19)*100);
-  const payload={
-    savedAt:new Date().toISOString(),
-    loveScore:pct+'%',
-    goodAnswers:goodCount,
-    totalQuestions:19,
-    mistakes:answers.filter(a=>a&&a.score===0&&a.qIdx<15).map(a=>({question:questions[a.qIdx].q,answer:a.text,apology:questions[a.qIdx].sorryFor})),
-    loveMessage:answers[19]&&answers[19].loveLetter||'',
-    allAnswers:answers.map((a,i)=>a?{q:questions[i]?questions[i].q:'Dil ki Baat',answer:a.text,type:a.score===1?'Love':'Sorry'}:null).filter(Boolean)
-  };
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='rizwan-rameen-result.json';
-  a.click();
 }
 
 // CONFETTI
