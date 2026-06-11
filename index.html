@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ur" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rizwan ka Itiraf 💌 — Rameen ke Liye</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --rose:#ff4d6d;--rose-light:#ff8fa3;--rose-pale:#ffe0e6;
+  --gold:#f7c59f;--cream:#fff8f9;--deep:#3d0c11;
+  --purple:#c77dff;--teal:#48cae4;
+  --shadow:0 8px 32px rgba(255,77,109,0.15);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Poppins',sans-serif;background:var(--cream);min-height:100vh;overflow-x:hidden;}
+#bgCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+
+/* HERO */
+.hero{position:relative;z-index:1;text-align:center;padding:60px 20px 40px;
+  background:linear-gradient(160deg,#fff0f3 0%,#ffe5ec 50%,#ffd6e0 100%);
+  border-bottom:2px solid var(--rose-pale);overflow:hidden;}
+.hero-names{font-family:'Dancing Script',cursive;font-size:clamp(2rem,8vw,4.5rem);
+  color:var(--rose);line-height:1.1;margin-bottom:8px;animation:fadeSlideDown .8s ease both;}
+.hero-names span{color:var(--deep)}
+.hero-sub{font-size:clamp(0.85rem,3vw,1.1rem);color:#888;margin-bottom:24px;animation:fadeSlideDown 1s ease .2s both;}
+.hero-heart{font-size:3rem;animation:heartbeat 1.4s ease-in-out infinite;display:inline-block;}
+.progress-wrap{max-width:440px;margin:20px auto 0;animation:fadeSlideDown 1.2s ease .4s both;}
+.progress-label{display:flex;justify-content:space-between;font-size:.8rem;color:#aaa;margin-bottom:6px;}
+.progress-bar-bg{height:8px;background:#ffd6e0;border-radius:99px;overflow:hidden;}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--rose-light),var(--rose));
+  border-radius:99px;width:0%;transition:width .6s cubic-bezier(.34,1.56,.64,1);}
+
+/* SECTION BADGE */
+.section-badge{text-align:center;padding:28px 16px 4px;position:relative;z-index:1;}
+.section-badge span{background:linear-gradient(135deg,var(--rose),var(--purple));color:#fff;
+  font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  padding:6px 18px;border-radius:99px;display:inline-block;}
+
+/* QUESTION CARD */
+.q-card{position:relative;z-index:1;max-width:560px;margin:16px auto;background:#fff;
+  border-radius:24px;box-shadow:var(--shadow);padding:28px 24px 24px;
+  border:1.5px solid var(--rose-pale);opacity:0;transform:translateY(30px);
+  transition:opacity .5s ease,transform .5s ease;overflow:hidden;}
+.q-card.visible{opacity:1;transform:translateY(0)}
+.q-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--rose-light),var(--purple),var(--teal));}
+.q-anim{position:absolute;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;overflow:hidden;border-radius:24px;z-index:0;}
+.q-content{position:relative;z-index:1;}
+.q-num{font-size:.72rem;font-weight:600;color:var(--rose-light);letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:8px;}
+.q-text{font-size:clamp(.95rem,3vw,1.1rem);font-weight:500;color:var(--deep);
+  line-height:1.5;margin-bottom:20px;}
+
+/* OPTIONS */
+.options{display:flex;flex-direction:column;gap:10px;}
+.opt-btn{display:flex;align-items:center;gap:12px;background:var(--cream);
+  border:2px solid #ffd6e0;border-radius:16px;padding:14px 18px;cursor:pointer;
+  font-family:'Poppins',sans-serif;font-size:clamp(.85rem,2.5vw,.95rem);color:#444;
+  text-align:left;transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent;}
+.opt-btn:hover{border-color:var(--rose-light);background:#fff5f7;transform:translateX(4px);}
+.opt-btn.sel-love{background:linear-gradient(135deg,#fff0f3,#ffe5ec);border-color:var(--rose);color:var(--deep);}
+.opt-btn.sel-sorry{background:linear-gradient(135deg,#f0f4ff,#e8eeff);border-color:#6c8bff;color:#1a3080;}
+.opt-icon{font-size:1.4rem;flex-shrink:0;}
+.opt-text{flex:1;line-height:1.4;}
+
+/* TEXTAREA */
+.love-textarea{width:100%;min-height:130px;border:2px solid #ffd6e0;border-radius:16px;
+  padding:14px 16px;font-family:'Poppins',sans-serif;font-size:.9rem;color:var(--deep);
+  background:var(--cream);resize:none;outline:none;transition:border-color .3s;line-height:1.6;}
+.love-textarea:focus{border-color:var(--rose);}
+.love-textarea::placeholder{color:#ccc;}
+.next-btn{margin-top:14px;width:100%;background:linear-gradient(135deg,var(--rose),#c9184a);
+  color:#fff;border:none;border-radius:16px;padding:14px;font-family:'Poppins',sans-serif;
+  font-size:1rem;font-weight:600;cursor:pointer;transition:transform .2s,box-shadow .2s;
+  box-shadow:0 4px 20px rgba(255,77,109,.35);}
+.next-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,77,109,.45);}
+
+/* FLOATING PARTICLES */
+.float-particle{position:fixed;pointer-events:none;animation:floatUp 3.5s ease-in forwards;z-index:999;}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1) rotate(0deg);}
+  100%{opacity:0;transform:translateY(-340px) scale(.3) rotate(40deg);}}
+
+/* SORRY WORD */
+.sorry-word{position:fixed;pointer-events:none;font-family:'Dancing Script',cursive;
+  font-weight:700;color:#6c8bff;z-index:999;
+  animation:sorryFloat 2.8s ease-out forwards;}
+@keyframes sorryFloat{
+  0%{opacity:1;transform:translateY(0) scale(.6) rotate(-8deg);}
+  40%{opacity:1;transform:translateY(-80px) scale(1) rotate(4deg);}
+  100%{opacity:0;transform:translateY(-220px) scale(.7) rotate(10deg);}}
+
+/* RESULT PAGE */
+#resultPage{display:none;position:relative;z-index:1;max-width:620px;margin:0 auto;padding:24px 16px 60px;}
+
+.result-hero{text-align:center;padding:36px 20px 28px;
+  background:linear-gradient(160deg,#fff0f3,#ffe5ec);
+  border-radius:28px;margin-bottom:20px;border:1.5px solid var(--rose-pale);box-shadow:var(--shadow);}
+.result-title{font-family:'Dancing Script',cursive;font-size:clamp(1.8rem,6vw,3rem);color:var(--rose);margin-bottom:8px;}
+.result-emoji-big{font-size:4rem;display:block;margin:10px 0;animation:heartbeat 1.4s infinite;}
+.result-score-circle{
+  width:110px;height:110px;border-radius:50%;
+  background:linear-gradient(135deg,var(--rose),var(--purple));
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  margin:16px auto;box-shadow:0 8px 32px rgba(255,77,109,.35);}
+.result-score-num{font-size:2rem;font-weight:700;color:#fff;line-height:1;}
+.result-score-lbl{font-size:.65rem;color:rgba(255,255,255,.8);letter-spacing:.05em;margin-top:2px;}
+.result-msg{font-size:clamp(.9rem,3vw,1.05rem);color:#555;line-height:1.7;
+  max-width:460px;margin:14px auto 0;padding:16px;
+  background:#fff;border-radius:16px;border-left:4px solid var(--rose);}
+
+/* SORRY SECTION */
+.sorry-section{background:#fff;border-radius:24px;padding:24px 20px;margin-bottom:16px;
+  box-shadow:var(--shadow);border:1.5px solid #d0d8ff;}
+.sorry-title{font-weight:600;color:#1a3080;font-size:1rem;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.sorry-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.sorry-list li{padding:10px 14px;background:#f0f4ff;border-radius:12px;
+  font-size:.85rem;color:#2a3f8f;line-height:1.5;border-left:3px solid #6c8bff;}
+
+/* LOVE METER */
+.love-meter-wrap{background:#fff;border-radius:24px;padding:24px 20px;margin-bottom:16px;
+  box-shadow:var(--shadow);border:1.5px solid var(--rose-pale);}
+.lm-title{font-weight:600;color:var(--deep);font-size:1rem;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.param-row{margin-bottom:14px;}
+.param-label{display:flex;justify-content:space-between;font-size:.82rem;color:#666;margin-bottom:5px;font-weight:500;}
+.param-pct{color:var(--rose);font-weight:700;}
+.param-bar-bg{height:10px;background:#ffd6e0;border-radius:99px;overflow:hidden;}
+.param-bar-fill{height:100%;border-radius:99px;width:0%;transition:width 1.4s cubic-bezier(.34,1.56,.64,1);}
+
+/* LOVE LETTER */
+.love-letter-wrap{background:#fff;border-radius:24px;padding:24px 20px;margin-bottom:16px;
+  box-shadow:var(--shadow);border:1.5px solid var(--rose-pale);}
+.love-letter-title{font-weight:600;color:var(--deep);font-size:1rem;margin-bottom:14px;}
+.love-letter-body{font-size:.92rem;color:#3d0c11;line-height:1.8;white-space:pre-wrap;
+  font-style:italic;background:#fff8f9;padding:18px;border-radius:14px;
+  border:1.5px dashed #ffd6e0;font-family:'Dancing Script',cursive;font-size:1rem;}
+
+/* SHARE BTN */
+.share-btn{width:100%;background:linear-gradient(135deg,var(--rose),#c9184a);
+  color:#fff;border:none;border-radius:16px;padding:16px;font-family:'Poppins',sans-serif;
+  font-size:1rem;font-weight:600;cursor:pointer;box-shadow:0 4px 20px rgba(255,77,109,.35);
+  display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .2s;}
+.share-btn:hover{transform:translateY(-2px);}
+
+/* SAVE STATUS */
+.save-status{text-align:center;margin-top:12px;font-size:.8rem;color:#aaa;min-height:20px;}
+
+/* CONFETTI */
+.confetti-piece{position:fixed;width:8px;height:8px;border-radius:2px;
+  pointer-events:none;animation:confettiFall linear forwards;z-index:998;}
+@keyframes confettiFall{0%{opacity:1;transform:translateY(-10px) rotate(0deg);}
+  100%{opacity:0;transform:translateY(100vh) rotate(540deg);}}
+
+/* KEYFRAMES */
+@keyframes fadeSlideDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes heartbeat{0%,100%{transform:scale(1);}14%{transform:scale(1.2);}28%{transform:scale(1);}42%{transform:scale(1.15);}70%{transform:scale(1);}}
+
+/* RESPONSIVE */
+@media(max-width:480px){
+  .hero{padding:44px 16px 32px;}
+  .q-card{margin:12px 12px;padding:22px 16px 18px;}
+  .opt-btn{padding:12px 14px;}
+  #resultPage{padding:16px 12px 50px;}
+}
+
+#surveyPage{position:relative;z-index:1;}
+</style>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+
+<!-- SURVEY PAGE -->
+<div id="surveyPage">
+  <div class="hero">
+    <div class="hero-names">Rameen <span>&amp;</span> Rizwan</div>
+    <div class="hero-sub">💌 Rizwan ka Dil — Rameen ke Naam</div>
+    <div class="hero-heart">❤️</div>
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="progressText">Sawaal 0 / 20</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+    </div>
+  </div>
+
+  <div class="section-badge"><span>💔 Larai ka Itiraf — Q1 to Q15</span></div>
+
+  <div class="q-card" data-q="1"><canvas class="q-anim" id="anim1"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 1 / 20</div>
+    <div class="q-text">Jab humari larai shuru hui, Rizwan ne pehle kya kiya?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">❤️</span><span class="opt-text">Samjhane ki koshish ki, gussa piya</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">😬</span><span class="opt-text">Aur ziada argue kar diya</span></button>
+    </div>
+  </div></div>
+
+  <div class="q-card" data-q="2"><canvas class="q-anim" id="anim2"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 2 / 20</div>
+    <div class="q-text">Larai mein Rameen roti rahi, Rizwan kahan tha?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">💞</span><span class="opt-text">Paas aa gaya, aansu nahi dekh sakta</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">😶</span><span class="opt-text">Door raha, thanda pad jane diya</span></button>
+    </div>
+  </div></div>
+
+  <div class="q-card" data-q="3"><canvas class="q-anim" id="anim3"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 3 / 20</div>
+    <div class="q-text">Sorry kehne mein Rizwan ne kitna waqt liya?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">🌹</span><span class="opt-text">Jaldi — kyunki Rameen ka dard nahi dekha gaya</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">⏳</span><span class="opt-text">Zyada waqt laga, ego aage tha</span></button>
+    </div>
+  </div></div>
+
+  <div class="q-card" data-q="4"><canvas class="q-anim" id="anim4"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 4 / 20</div>
+    <div class="q-text">Larai ke baad pehla qadam kisne uthaya?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">🙋</span><span class="opt-text">Rizwan ne, woh pehle manta hai</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">🤐</span><span class="opt-text">Koi nahi uthaya, dono chup rahe</span></button>
+    </div>
+  </div></div>
+
+  <div class="q-card" data-q="5"><canvas class="q-anim" id="anim5"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 5 / 20</div>
+    <div class="q-text">Kya Rizwan ne Rameen ki baat poori sunne ki koshish ki?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">👂</span><span class="opt-text">Haan, sunna zaroori lagta hai</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">🗣️</span><span class="opt-text">Beech mein hi apni baat shuru kar deta hai</span></button>
+    </div>
+  </div></div>
+
+  <div class="q-card" data-q="6"><canvas class="q-anim" id="anim6"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 6 / 20</div>
+    <div class="q-text">Jab Rameen ne gusse mein kuch kaha, Rizwan ka reaction?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">💓</span><span class="opt-text">Samjha — gusse mein sab bolte hain</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">😤</span><span class="opt-text">Rizwan bhi gusse mein aa gaya</span></button>
+    </div>
+  </div></div>
+
+  <div class="q-card" data-q="7"><canvas class="q-anim" id="anim7"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 7 / 20</div>
+    <div class="q-text">Rameen ko manane ke liye Rizwan ne kya kiya?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">🍫</span><span class="opt-text">Kuch special kiya — chai, chocolate, ya pyara message</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">🤷</span><span class="opt-text">Kuch nahi, waqt pe theek ho jaata hai</span></button>
+    </div>
+  </div></div>
+
+  <div class="q-card" data-q="8"><canvas class="q-anim" id="anim8"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 8 / 20</div>
+    <div class="q-text">Kya is larai mein Rizwan ki koi galti thi?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">✅</span><span class="opt-text">Haan, dil se maanta hai</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">🙈</span><span class="opt-text">Shayad... par accept karna mushkil tha</span></button>
+    </div>
+  </div></div>
+
+  <div class="q-card" data-q="9"><canvas class="q-anim" id="anim9"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 9 / 20</div>
+    <div class="q-text">Jab dono ki larai hoti hai, ghar ka mahol kaisa lagta hai Rizwan ko?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">😔</span><span class="opt-text">Bahut bura, jaldi theek karna chahta hai</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">😐</span><span class="opt-text">Normal, time ke saath theek ho jata hai</span></button>
+    </div>
+  </div></div>
+
+  <div class="q-card" data-q="10"><canvas class="q-anim" id="anim10"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 10 / 20</div>
+    <div class="q-text">Kya Rizwan ne kabhi socha — "Meri wajah se Rameen dukhi hai"?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">💔</span><span class="opt-text">Haan, andar se toot gaya tha yeh soch ke</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">😅</span><span class="opt-text">Thoda... par ziada nahi socha</span></button>
+    </div>
+  </div></div>
+
+  <div class="q-card" data-q="11"><canvas class="q-anim" id="anim11"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 11 / 20</div>
+    <div class="q-text">Larai ke baad neend aayi Rizwan ko?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">🌙</span><span class="opt-text">Nahi, Rameen se rootha so nahi sakta</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">😴</span><span class="opt-text">Haan so gaya — kal dekha jayega</span></button>
+    </div>
+  </div></div>
+
+  <div class="q-card" data-q="12"><canvas class="q-anim" id="anim12"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 12 / 20</div>
+    <div class="q-text">Agar waqt palat sake, Rizwan kya karta?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">🔄</span><span class="opt-text">Larai hi nahi karta, pyar se baat karta</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">😶</span><span class="opt-text">Shayad wahi karta jo kiya</span></button>
+    </div>
+  </div></div>
+
+  <div class="q-card" data-q="13"><canvas class="q-anim" id="anim13"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 13 / 20</div>
+    <div class="q-text">Kya Rizwan sach mein maafi chahta hai — dil se?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">💐</span><span class="opt-text">Haan, Rameen ki muskaan wapas chahiye bas</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">🥺</span><span class="opt-text">Haan aur promise bhi karna chahta hai</span></button>
+    </div>
+  </div></div>
+
+  <div class="q-card" data-q="14"><canvas class="q-anim" id="anim14"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 14 / 20</div>
+    <div class="q-text">Is larai ke baad Rizwan ne kya seekha?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">📖</span><span class="opt-text">Rameen ki feelings pehle, apni baat baad mein</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">🤷</span><span class="opt-text">Abhi tak soch raha hai</span></button>
+    </div>
+  </div></div>
+
+  <div class="q-card" data-q="15"><canvas class="q-anim" id="anim15"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 15 / 20</div>
+    <div class="q-text">Kya Rizwan khud ko ek achha shauhar maanta hai?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">🫶</span><span class="opt-text">Koshish karta hoon, Rameen deserve karti hai sab</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">😬</span><span class="opt-text">Shayad nahi... abhi bahut seekhna hai</span></button>
+    </div>
+  </div></div>
+
+  <div class="section-badge"><span>💕 Rizwan ka Pyar — Q16 to Q20</span></div>
+
+  <div class="q-card" data-q="16"><canvas class="q-anim" id="anim16"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 16 / 20</div>
+    <div class="q-text">Rameen ke baghair Rizwan ki zindagi kaisi hai?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">🌑</span><span class="opt-text">Andhera hai, woh hi roshni hai meri</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">💫</span><span class="opt-text">Adhoori hai, koi poora nahi karta uski tarah</span></button>
+    </div>
+  </div></div>
+
+  <div class="q-card" data-q="17"><canvas class="q-anim" id="anim17"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 17 / 20</div>
+    <div class="q-text">Rizwan ko Rameen mein sabse zyada kya pasand hai?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">😊</span><span class="opt-text">Uski muskaan — duniya ruk jaati hai</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">💪</span><span class="opt-text">Uski himmat — akele sambhalti hai sab</span></button>
+    </div>
+  </div></div>
+
+  <div class="q-card" data-q="18"><canvas class="q-anim" id="anim18"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 18 / 20</div>
+    <div class="q-text">Agar Rizwan Rameen ko ek cheez de sakta — kya deta?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">🌍</span><span class="opt-text">Poori duniya ki khushiyan — sirf uske liye</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">❤️</span><span class="opt-text">Apna poora dil — jo waise bhi uska hi hai</span></button>
+    </div>
+  </div></div>
+
+  <div class="q-card" data-q="19"><canvas class="q-anim" id="anim19"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 19 / 20</div>
+    <div class="q-text">Rizwan Rameen se kitna pyar karta hai?</div>
+    <div class="options">
+      <button class="opt-btn" data-val="good" data-score="1"><span class="opt-icon">🌙</span><span class="opt-text">Chand sitaron se bhi zyada — counting nahi ho sakti</span></button>
+      <button class="opt-btn" data-val="bad" data-score="0"><span class="opt-icon">🔥</span><span class="opt-text">Lafzon mein nahi aata — bas hai, aur rahega</span></button>
+    </div>
+  </div></div>
+
+  <!-- Q20 OPEN -->
+  <div class="q-card" data-q="20"><canvas class="q-anim" id="anim20"></canvas><div class="q-content">
+    <div class="q-num">Sawaal 20 / 20 ✨ — Dil ki Baat</div>
+    <div class="q-text">Rizwan, apni Rameen ko kuch kehna chahte ho? Yahan likho — sirf unke liye, dil se... koi limit nahi. Maafi ho, pyar ho, jo bhi dil mein hai — likho. 💌</div>
+    <textarea class="love-textarea" id="loveMessage" placeholder="Meri Rameen... main jaanta hoon galti meri thi. Mujhe maafi chahiye..."></textarea>
+    <button class="next-btn" onclick="submitSurvey()">💌 Rameen ko Bhejo — Nateeja Dekho</button>
+  </div></div>
+
+</div><!-- end surveyPage -->
+
+<!-- RESULT PAGE -->
+<div id="resultPage">
+
+  <div class="result-hero">
+    <span class="result-emoji-big" id="resultEmoji">❤️</span>
+    <div class="result-title" id="resultTitle">Nateeja aa gaya!</div>
+    <div class="result-score-circle">
+      <div class="result-score-num" id="scoreNum">0%</div>
+      <div class="result-score-lbl">LOVE SCORE</div>
+    </div>
+    <div class="result-msg" id="resultMsg"></div>
+  </div>
+
+  <!-- SORRY SECTION — only shows if mistakes -->
+  <div class="sorry-section" id="sorrySection" style="display:none">
+    <div class="sorry-title">🙏 Rizwan ki Taraf se — Sachchi Maafi</div>
+    <ul class="sorry-list" id="sorryList"></ul>
+  </div>
+
+  <!-- LOVE METER -->
+  <div class="love-meter-wrap">
+    <div class="lm-title">💝 Love Parameters — Rizwan ka Report Card</div>
+    <div class="param-row">
+      <div class="param-label"><span>💞 Mohabbat ki Gehraai</span><span class="param-pct" id="pct1">0%</span></div>
+      <div class="param-bar-bg"><div class="param-bar-fill" id="bar1" style="background:linear-gradient(90deg,#ff4d6d,#ff8fa3)"></div></div>
+    </div>
+    <div class="param-row">
+      <div class="param-label"><span>🤲 Maafi ki Aadat</span><span class="param-pct" id="pct2">0%</span></div>
+      <div class="param-bar-bg"><div class="param-bar-fill" id="bar2" style="background:linear-gradient(90deg,#c77dff,#e0aaff)"></div></div>
+    </div>
+    <div class="param-row">
+      <div class="param-label"><span>👂 Sunne ki Taqat</span><span class="param-pct" id="pct3">0%</span></div>
+      <div class="param-bar-bg"><div class="param-bar-fill" id="bar3" style="background:linear-gradient(90deg,#48cae4,#90e0ef)"></div></div>
+    </div>
+    <div class="param-row">
+      <div class="param-label"><span>🌹 Samarpan</span><span class="param-pct" id="pct4">0%</span></div>
+      <div class="param-bar-bg"><div class="param-bar-fill" id="bar4" style="background:linear-gradient(90deg,#f7c59f,#ffb347)"></div></div>
+    </div>
+    <div class="param-row">
+      <div class="param-label"><span>💫 Zindagi mein Rameen ki Ahmiyat</span><span class="param-pct" id="pct5">0%</span></div>
+      <div class="param-bar-bg"><div class="param-bar-fill" id="bar5" style="background:linear-gradient(90deg,#ff4d6d,#c77dff)"></div></div>
+    </div>
+    <div class="param-row" style="margin-top:20px;padding-top:14px;border-top:2px dashed #ffd6e0;">
+      <div class="param-label"><span style="font-weight:700;color:#3d0c11">🏆 Overall Love Score</span><span class="param-pct" id="pctTotal" style="font-size:1.1rem">0%</span></div>
+      <div class="param-bar-bg" style="height:14px"><div class="param-bar-fill" id="barTotal" style="background:linear-gradient(90deg,#ff4d6d,#c77dff,#48cae4)"></div></div>
+    </div>
+  </div>
+
+  <!-- LOVE LETTER -->
+  <div class="love-letter-wrap" id="loveLetterWrap" style="display:none">
+    <div class="love-letter-title">💌 Rizwan ki Dil ki Baat — Sirf Rameen ke Liye</div>
+    <div class="love-letter-body" id="loveLetterBody"></div>
+  </div>
+
+  <button class="share-btn" onclick="downloadResult()">📥 Apna Nateeja Save Karo (Sirf Rizwan ke Liye)</button>
+  <div class="save-status" id="saveStatus"></div>
+
+</div><!-- end resultPage -->
+
+<script>
+const questions=[
+  {q:"Jab humari larai shuru hui, Rizwan ne pehle kya kiya?",good:"❤️ Samjhane ki koshish ki, gussa piya",bad:"😬 Aur ziada argue kar diya",sorryFor:"Larai mein pehle argue karne ki bajaye tumhe sunna chahiye tha."},
+  {q:"Larai mein Rameen roti rahi, Rizwan kahan tha?",good:"💞 Paas aa gaya, aansu nahi dekha gaya",bad:"😶 Door raha, thanda pad jane diya",sorryFor:"Rameen, jab tum ro rahi thi main door tha — yeh meri badi galti thi."},
+  {q:"Sorry kehne mein Rizwan ne kitna waqt liya?",good:"🌹 Jaldi — Rameen ka dard nahi dekha gaya",bad:"⏳ Zyada waqt laga, ego aage tha",sorryFor:"Mera ego aage aaya aur sorry kehne mein der ki — yeh sahi nahi tha."},
+  {q:"Larai ke baad pehla qadam kisne uthaya?",good:"🙋 Rizwan ne, woh pehle manta hai",bad:"🤐 Koi nahi uthaya, dono chup rahe",sorryFor:"Maafi mangne mein pehla qadam main nahi uthaya — yeh meri zimmedaari thi."},
+  {q:"Kya Rizwan ne Rameen ki baat poori sunne ki koshish ki?",good:"👂 Haan, sunna zaroori lagta hai",bad:"🗣️ Beech mein hi apni baat shuru kar deta hai",sorryFor:"Tumhari baat beech mein kaatna galat tha — tumhari poori baat sunni chahiye thi."},
+  {q:"Jab Rameen ne gusse mein kuch kaha, Rizwan ka reaction?",good:"💓 Samjha — gusse mein sab bolte hain",bad:"😤 Rizwan bhi gusse mein aa gaya",sorryFor:"Tumhare gusse ka jawab gusse se dena bilkul sahi nahi tha."},
+  {q:"Rameen ko manane ke liye Rizwan ne kya kiya?",good:"🍫 Kuch special kiya",bad:"🤷 Kuch nahi kiya",sorryFor:"Tumhe manane ki koshish nahi ki — tumhara dil rakhna meri farz thi."},
+  {q:"Kya is larai mein Rizwan ki koi galti thi?",good:"✅ Haan, dil se maanta hai",bad:"🙈 Accept karna mushkil tha",sorryFor:"Apni galti accept karne mein jhijhak thi — yeh mazbooti nahi kamzori thi."},
+  {q:"Jab dono ki larai hoti hai, ghar ka mahol kaisa lagta hai?",good:"😔 Bahut bura, jaldi theek karna chahta hai",bad:"😐 Normal lagta hai",sorryFor:"Larai ko 'normal' lena ghalat tha — yeh tumhare dil ko takleef deta tha."},
+  {q:'Kya kabhi socha — "Meri wajah se Rameen dukhi hai"?',good:"💔 Haan, andar se toot gaya",bad:"😅 Thoda... ziada nahi socha",sorryFor:"Tumhara dard mehsoos karna chiye tha — us waqt main apne aap mein kho gaya."},
+  {q:"Larai ke baad neend aayi Rizwan ko?",good:"🌙 Nahi, Rameen se rootha so nahi sakta",bad:"😴 Haan so gaya",sorryFor:"Larai ke baad so jana — tumhare liye yeh dil tootna tha, mujhe maafi maangni chahiye thi."},
+  {q:"Agar waqt palat sake, Rizwan kya karta?",good:"🔄 Pyar se baat karta",bad:"😶 Shayad wahi karta",sorryFor:"Agar waqt milta to main wahi karta — yeh soch ke dil dukhi hota hai."},
+  {q:"Kya Rizwan sach mein maafi chahta hai?",good:"💐 Haan, Rameen ki muskaan wapas chahiye",bad:"🥺 Haan aur promise bhi",sorryFor:"Sirf sorry nahi — main promise karta hoon aage se zyada khayal rakhunga."},
+  {q:"Is larai ke baad Rizwan ne kya seekha?",good:"📖 Rameen ki feelings pehle",bad:"🤷 Abhi tak soch raha hai",sorryFor:"Seekhna tha jaldi — tumhari feelings meri priorities mein pehle honi chahiye thi."},
+  {q:"Kya Rizwan khud ko ek achha shauhar maanta hai?",good:"🫶 Koshish karta hoon",bad:"😬 Shayad nahi...",sorryFor:"Main jaanta hoon abhi bahut seekhna hai — par tumse pyar sachcha hai, Rameen."},
+];
+
+const answers=new Array(20).fill(null);
+let answered=0;
+
+// BG CANVAS
+const bgC=document.getElementById('bgCanvas');
+const bgCtx=bgC.getContext('2d');
+let petals=[];
+function resizeBg(){bgC.width=innerWidth;bgC.height=innerHeight;}
+resizeBg();addEventListener('resize',resizeBg);
+function mkPetal(){return{x:Math.random()*bgC.width,y:-20,size:Math.random()*6+3,speed:Math.random()*.5+.2,drift:(Math.random()-.5)*.3,opacity:Math.random()*.25+.08,rot:Math.random()*360,rspeed:(Math.random()-.5)*1.5};}
+for(let i=0;i<30;i++){let p=mkPetal();p.y=Math.random()*bgC.height;petals.push(p);}
+function bgLoop(){
+  bgCtx.clearRect(0,0,bgC.width,bgC.height);
+  petals.forEach(p=>{
+    bgCtx.save();bgCtx.translate(p.x,p.y);bgCtx.rotate(p.rot*Math.PI/180);
+    bgCtx.globalAlpha=p.opacity;bgCtx.fillStyle='#ff4d6d';bgCtx.beginPath();
+    const s=p.size;bgCtx.moveTo(0,-s);bgCtx.bezierCurveTo(s,-s,s,s*.5,0,s);bgCtx.bezierCurveTo(-s,s*.5,-s,-s,0,-s);bgCtx.fill();bgCtx.restore();
+    p.y+=p.speed;p.x+=p.drift;p.rot+=p.rspeed;
+    if(p.y>bgC.height+20)Object.assign(p,mkPetal());
+  });
+  requestAnimationFrame(bgLoop);
+}
+bgLoop();
+
+// PER CARD ANIMATIONS
+const animTypes=['hearts','stars','roses','butterflies','sparkles','rain','petals','moons','clouds','confetti'];
+const cardAnims={};
+function initCardAnim(num){
+  const cv=document.getElementById('anim'+num);if(!cv)return;
+  const ctx=cv.getContext('2d');
+  const type=animTypes[(num-1)%animTypes.length];
+  let parts=[];
+  function resize(){cv.width=cv.offsetWidth;cv.height=cv.offsetHeight;}
+  resize();addEventListener('resize',resize);
+  function mp(){return{x:Math.random()*cv.width,y:Math.random()*cv.height,size:Math.random()*10+4,speed:Math.random()*.35+.1,opacity:Math.random()*.12+.04,dx:(Math.random()-.5)*.25,life:Math.random()*200+100,age:0,rot:Math.random()*360};}
+  for(let i=0;i<8;i++)parts.push(mp());
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    parts.forEach(p=>{
+      ctx.save();ctx.globalAlpha=p.opacity*(1-p.age/p.life);ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);
+      ctx.font=p.size+'px serif';
+      if(type==='hearts'||type==='roses')ctx.fillText('❤',0,0);
+      else if(type==='stars')ctx.fillText('★',0,0);
+      else if(type==='butterflies')ctx.fillText('🦋',0,0);
+      else if(type==='sparkles')ctx.fillText('✦',0,0);
+      else if(type==='moons')ctx.fillText('☽',0,0);
+      else ctx.fillText('✿',0,0);
+      ctx.restore();
+      p.y-=p.speed;p.x+=p.dx;p.rot+=.3;p.age++;
+      if(p.age>=p.life||p.y<-20)Object.assign(p,mp());
+    });
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+  cardAnims[num]=true;
+}
+
+// OBSERVER
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');const q=parseInt(e.target.dataset.q);if(!cardAnims[q])initCardAnim(q);}});
+},{threshold:.15});
+document.querySelectorAll('.q-card').forEach(c=>observer.observe(c));
+
+// NAME RAIN
+(function(){
+  const hero=document.querySelector('.hero');
+  const chars=['R','a','m','e','e','n','💌','R','i','z','w','a','n','❤','🌹'];
+  setInterval(()=>{
+    const s=document.createElement('span');
+    s.textContent=chars[Math.floor(Math.random()*chars.length)];
+    s.style.cssText=`position:absolute;left:${Math.random()*100}%;top:-20px;font-family:'Dancing Script',cursive;font-size:${Math.random()*14+10}px;color:rgba(255,77,109,${Math.random()*.2+.08});pointer-events:none;animation:confettiFall ${Math.random()*2+2}s linear forwards;z-index:0;`;
+    hero.appendChild(s);setTimeout(()=>s.remove(),4000);
+  },220);
+})();
+
+// OPTION CLICK
+document.querySelectorAll('.opt-btn').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    const card=this.closest('.q-card');
+    const qNum=parseInt(card.dataset.q);
+    if(answers[qNum-1]!==null)return;
+    const sc=parseInt(this.dataset.score);
+    const val=this.dataset.val;
+    answers[qNum-1]={val,score:sc,text:this.querySelector('.opt-text').textContent,qIdx:qNum-1};
+    card.querySelectorAll('.opt-btn').forEach(b=>b.style.pointerEvents='none');
+    if(sc===1){
+      this.classList.add('sel-love');
+      spawnLove(this);
+    }else{
+      this.classList.add('sel-sorry');
+      spawnSorry(this);
+    }
+    updateProgress();
+  });
+});
+
+function updateProgress(){
+  answered=answers.filter(a=>a!==null).length;
+  const pct=Math.round((answered/20)*100);
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressText').textContent=`Sawaal ${answered} / 20`;
+  document.getElementById('progressPct').textContent=pct+'%';
+}
+
+// LOVE ANIMATION
+function spawnLove(el){
+  const rect=el.getBoundingClientRect();
+  const emojis=['❤️','💕','🌹','✨','💫','💖','🌸'];
+  for(let i=0;i<8;i++){
+    const h=document.createElement('div');
+    h.className='float-particle';
+    h.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    h.style.left=(rect.left+Math.random()*rect.width)+'px';
+    h.style.top=(rect.top+window.scrollY+rect.height/2)+'px';
+    h.style.fontSize=(Math.random()*14+12)+'px';
+    h.style.animationDuration=(Math.random()*1.5+2)+'s';
+    h.style.animationDelay=(Math.random()*.3)+'s';
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),4000);
+  }
+}
+
+// SORRY ANIMATION
+function spawnSorry(el){
+  const rect=el.getBoundingClientRect();
+  const words=['Sorry','Maafi','Galti','معاف کرو','Sorry 😔','Maaf Karo','Bhool Jao'];
+  for(let i=0;i<10;i++){
+    const w=document.createElement('div');
+    w.className='sorry-word';
+    w.textContent=words[Math.floor(Math.random()*words.length)];
+    w.style.left=(rect.left+Math.random()*rect.width*1.2-20)+'px';
+    w.style.top=(rect.top+window.scrollY+rect.height/2)+'px';
+    w.style.fontSize=(Math.random()*12+10)+'px';
+    w.style.animationDelay=(Math.random()*.6)+'s';
+    w.style.animationDuration=(Math.random()*1.2+2)+'s';
+    document.body.appendChild(w);
+    setTimeout(()=>w.remove(),4000);
+  }
+}
+
+// SUBMIT
+function submitSurvey(){
+  const msg=document.getElementById('loveMessage').value.trim();
+  if(!msg){
+    document.getElementById('loveMessage').style.borderColor='#ff4d6d';
+    document.getElementById('loveMessage').placeholder='Kuch toh likho Rizwan... Rameen wait kar rahi hai 💌';
+    return;
+  }
+  answers[19]={val:'good',score:1,text:'💌 Dil ki Baat likhi',loveLetter:msg,qIdx:19};
+  updateProgress();
+  showResult(msg);
+}
+
+// SHOW RESULT
+function showResult(loveLetter){
+  document.getElementById('surveyPage').style.display='none';
+  document.getElementById('resultPage').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  const goodCount=answers.filter(a=>a&&a.score===1).length;
+  const pct=Math.round((goodCount/19)*100);
+  document.getElementById('scoreNum').textContent=pct+'%';
+
+  let emoji,title,msg;
+  if(pct>=90){emoji='👑';title='Rizwan tu BEST SHAUHAR hai!';msg='Rameen, yeh insaan sachcha pyar karta hai tumse. Larai ek lamha thi — mohabbat hamesha ke liye hai. Allah tum dono ko salamat rakhe. 🌹';}
+  else if(pct>=70){emoji='💕';title='Mashallah! Dil sahi jagah hai!';msg='Rizwan ka dil sachcha hai Rameen ke liye — thodi si aur koshish se yeh rishta aur bhi khubsoorat hoga. 🌸';}
+  else if(pct>=50){emoji='🌱';title='Pyar hai — bas aur dikhana hai!';msg='Dil toh hai — bas zyada mehnat zaroori hai. Rameen tumse mohabbat karti hai, woh sirf tumhari koshish maangti hai. 🌼';}
+  else{emoji='🤗';title='Uthho Rizwan — Rameen tumhara wait kar rahi hai!';msg='Yeh rishta keemat rakhta hai. Aaj se naya aaghaz karo — flowers, chocolate, aur sachchi maafi. Waqt hai! 💐';}
+
+  document.getElementById('resultEmoji').textContent=emoji;
+  document.getElementById('resultTitle').textContent=title;
+  document.getElementById('resultMsg').textContent=msg;
+
+  // Sorry section
+  const badAnswers=answers.filter(a=>a&&a.score===0&&a.qIdx<15);
+  if(badAnswers.length>0){
+    document.getElementById('sorrySection').style.display='block';
+    const list=document.getElementById('sorryList');
+    list.innerHTML='';
+    badAnswers.forEach(a=>{
+      const li=document.createElement('li');
+      li.textContent='🙏 '+questions[a.qIdx].sorryFor;
+      list.appendChild(li);
+    });
+  }
+
+  // Bars
+  const params=[
+    {bar:'bar1',pct:'pct1',val:calcParam([0,1,9,10,15])},
+    {bar:'bar2',pct:'pct2',val:calcParam([2,3,7,12])},
+    {bar:'bar3',pct:'pct3',val:calcParam([4,5])},
+    {bar:'bar4',pct:'pct4',val:calcParam([6,8,11,13])},
+    {bar:'bar5',pct:'pct5',val:calcParam([14,15,16,17,18])},
+  ];
+  setTimeout(()=>{
+    params.forEach(p=>{
+      document.getElementById(p.bar).style.width=p.val+'%';
+      document.getElementById(p.pct).textContent=p.val+'%';
+    });
+    document.getElementById('barTotal').style.width=pct+'%';
+    document.getElementById('pctTotal').textContent=pct+'%';
+  },500);
+
+  // Love letter
+  if(loveLetter){
+    document.getElementById('loveLetterWrap').style.display='block';
+    document.getElementById('loveLetterBody').textContent=loveLetter;
+  }
+
+  // Save to server
+  saveResultToServer(pct, badAnswers, loveLetter);
+
+  launchConfetti();
+}
+
+function calcParam(idxs){
+  let got=0;idxs.forEach(i=>{if(answers[i]&&answers[i].score===1)got++;});
+  return Math.round((got/idxs.length)*100);
+}
+
+// SAVE TO SERVER
+async function saveResultToServer(pct, badAnswers, loveLetter){
+  const payload={
+    savedAt: new Date().toISOString(),
+    loveScore: pct+'%',
+    goodAnswers: answers.filter(a=>a&&a.score===1).length,
+    totalQuestions: 19,
+    mistakes: badAnswers.map(a=>({question:questions[a.qIdx].q, answer:a.text, apology:questions[a.qIdx].sorryFor})),
+    loveMessage: loveLetter||'',
+    allAnswers: answers.map((a,i)=>a?{q:questions[i]?questions[i].q:'Dil ki Baat',answer:a.text,type:a.score===1?'Love':'Sorry'}:null).filter(Boolean)
+  };
+  try{
+    const res=await fetch('/save-result',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    if(res.ok){
+      document.getElementById('saveStatus').textContent='✅ Nateeja server par save ho gaya! /result.json se dekh sako ge.';
+    }else{
+      localSave(payload);
+    }
+  }catch(e){
+    localSave(payload);
+  }
+}
+
+function localSave(payload){
+  try{
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='rizwan-result-'+new Date().toISOString().slice(0,10)+'.json';
+    a.click();
+    document.getElementById('saveStatus').textContent='📥 result.json download ho gaya — yeh file tumhara nateeja hai!';
+  }catch(e){}
+}
+
+// DOWNLOAD (manual)
+function downloadResult(){
+  const goodCount=answers.filter(a=>a&&a.score===1).length;
+  const pct=Math.round((goodCount/19)*100);
+  const payload={
+    savedAt:new Date().toISOString(),
+    loveScore:pct+'%',
+    goodAnswers:goodCount,
+    totalQuestions:19,
+    mistakes:answers.filter(a=>a&&a.score===0&&a.qIdx<15).map(a=>({question:questions[a.qIdx].q,answer:a.text,apology:questions[a.qIdx].sorryFor})),
+    loveMessage:answers[19]&&answers[19].loveLetter||'',
+    allAnswers:answers.map((a,i)=>a?{q:questions[i]?questions[i].q:'Dil ki Baat',answer:a.text,type:a.score===1?'Love':'Sorry'}:null).filter(Boolean)
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='rizwan-rameen-result.json';
+  a.click();
+}
+
+// CONFETTI
+function launchConfetti(){
+  const colors=['#ff4d6d','#c77dff','#48cae4','#f7c59f','#ff8fa3'];
+  for(let i=0;i<90;i++){
+    const c=document.createElement('div');c.className='confetti-piece';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDuration=(Math.random()*2+2)+'s';
+    c.style.animationDelay=(Math.random()*1.5)+'s';
+    c.style.width=(Math.random()*8+4)+'px';c.style.height=(Math.random()*8+4)+'px';
+    c.style.borderRadius=Math.random()>.5?'50%':'2px';
+    document.body.appendChild(c);setTimeout(()=>c.remove(),5000);
+  }
+}
+</script>
+</body>
+</html>
