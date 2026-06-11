@@ -506,9 +506,14 @@ function initCardAnim(num){
   cardAnims[num]=true;
 }
 
-// OBSERVER
+// Initialize animations for ALL cards immediately
+for(let i=1;i<=20;i++){
+  setTimeout(()=>initCardAnim(i), i*50);
+}
+
+// OBSERVER for visibility
 const observer=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');const q=parseInt(e.target.dataset.q);if(!cardAnims[q])initCardAnim(q);}});
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');}});
 },{threshold:.15});
 document.querySelectorAll('.q-card').forEach(c=>observer.observe(c));
 
@@ -690,7 +695,12 @@ async function saveResultToServer(pct, badAnswers, loveLetter){
     totalQuestions: 19,
     mistakes: badAnswers.map(a=>({question:questions[a.qIdx].q, answer:a.text, apology:questions[a.qIdx].sorryFor})),
     loveMessage: loveLetter||'',
-    allAnswers: answers.map((a,i)=>a?{q:questions[i]?questions[i].q:'Dil ki Baat',answer:a.text,type:a.score===1?'Love':'Sorry'}:null).filter(Boolean)
+    allAnswers: answers.map((a,i)=>{
+      if(!a)return null;
+      // For last question, use loveLetter
+      if(i===19)return{q:'Dil ki Baat',answer:a.loveLetter||'',type:'DilKiBaat'};
+      return{q:questions[i]?questions[i].q:'Sawaal',answer:a.text,type:a.score===1?'Love':'Sorry'};
+    }).filter(Boolean)
   };
   try{
     const res=await fetch('/save-result',{
