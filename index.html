@@ -524,29 +524,31 @@ document.querySelectorAll('.q-card').forEach(c=>observer.observe(c));
   },220);
 })();
 
-// OPTION CLICK - Works for all questions on every click
-document.querySelectorAll('.opt-btn').forEach(btn=>{
-  btn.addEventListener('click',function(e){
-    e.stopPropagation();
-    const card=this.closest('.q-card');
-    const qNum=parseInt(card.dataset.q);
-    const sc=parseInt(this.dataset.score);
-    const val=this.dataset.val;
-    answers[qNum-1]={val,score:sc,text:this.querySelector('.opt-text').textContent,qIdx:qNum-1};
-    
-    // Remove previous selections
-    card.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('sel-love','sel-sorry'));
-    
-    // Add class and spawn animation
-    if(sc===1){
-      this.classList.add('sel-love');
-      spawnLove(this);
-    }else{
-      this.classList.add('sel-sorry');
-      spawnSorry(this);
-    }
-    updateProgress();
-  });
+// OPTION CLICK - Using event delegation for all buttons
+document.addEventListener('click', function(e){
+  const btn = e.target.closest('.opt-btn');
+  if(!btn) return;
+  
+  e.stopPropagation();
+  const card = btn.closest('.q-card');
+  const qNum = parseInt(card.dataset.q);
+  const sc = parseInt(btn.dataset.score);
+  const val = btn.dataset.val;
+  
+  answers[qNum-1] = {val, score:sc, text:btn.querySelector('.opt-text').textContent, qIdx:qNum-1};
+  
+  // Remove previous selections
+  card.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('sel-love','sel-sorry'));
+  
+  // Add class and spawn animation
+  if(sc===1){
+    btn.classList.add('sel-love');
+    spawnLove(btn);
+  }else{
+    btn.classList.add('sel-sorry');
+    spawnSorry(btn);
+  }
+  updateProgress();
 });
 
 function updateProgress(){
