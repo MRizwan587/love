@@ -568,7 +568,7 @@ function spawnLove(el){
     h.className='float-particle';
     h.textContent=emojis[Math.floor(Math.random()*emojis.length)];
     h.style.left=(rect.left+Math.random()*rect.width)+'px';
-    h.style.top=(rect.top+window.scrollY+rect.height/2)+'px';
+    h.style.top=(rect.top+rect.height/2)+'px';
     h.style.fontSize=(Math.random()*14+12)+'px';
     h.style.animationDuration=(Math.random()*1.5+2)+'s';
     h.style.animationDelay=(Math.random()*.3)+'s';
@@ -586,7 +586,7 @@ function spawnSorry(el){
     w.className='sorry-word';
     w.textContent=words[Math.floor(Math.random()*words.length)];
     w.style.left=(rect.left+Math.random()*rect.width*1.2-20)+'px';
-    w.style.top=(rect.top+window.scrollY+rect.height/2)+'px';
+    w.style.top=(rect.top+rect.height/2)+'px';
     w.style.fontSize=(Math.random()*12+10)+'px';
     w.style.animationDelay=(Math.random()*.6)+'s';
     w.style.animationDuration=(Math.random()*1.2+2)+'s';
