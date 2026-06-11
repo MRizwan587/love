@@ -426,7 +426,7 @@ body{font-family:'Poppins',sans-serif;background:var(--cream);min-height:100vh;o
     <div class="love-letter-body" id="loveLetterBody"></div>
   </div>
 
-  <div class="save-status" id="saveStatus">Nateeja server par save ho raha hai...</div>
+  <div class="save-status" id="saveStatus"></div>
 
 </div><!-- end resultPage -->
 
@@ -524,15 +524,20 @@ document.querySelectorAll('.q-card').forEach(c=>observer.observe(c));
   },220);
 })();
 
-// OPTION CLICK
+// OPTION CLICK - Works for all questions on every click
 document.querySelectorAll('.opt-btn').forEach(btn=>{
-  btn.addEventListener('click',function(){
+  btn.addEventListener('click',function(e){
+    e.stopPropagation();
     const card=this.closest('.q-card');
     const qNum=parseInt(card.dataset.q);
     const sc=parseInt(this.dataset.score);
     const val=this.dataset.val;
     answers[qNum-1]={val,score:sc,text:this.querySelector('.opt-text').textContent,qIdx:qNum-1};
-    // Animation plays on every click
+    
+    // Remove previous selections
+    card.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('sel-love','sel-sorry'));
+    
+    // Add class and spawn animation
     if(sc===1){
       this.classList.add('sel-love');
       spawnLove(this);
@@ -606,6 +611,9 @@ function showResult(loveLetter){
   document.getElementById('surveyPage').style.display='none';
   document.getElementById('resultPage').style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
+  
+  // Automatically save to server after showing results
+  setTimeout(()=>saveResultToServer(calculateScore(), getErrors(), loveLetter), 500);
 
   const goodCount=answers.filter(a=>a&&a.score===1).length;
   const pct=Math.round((goodCount/19)*100);
@@ -657,15 +665,20 @@ function showResult(loveLetter){
     document.getElementById('loveLetterBody').textContent=loveLetter;
   }
 
-  // Save to server
-  saveResultToServer(pct, badAnswers, loveLetter);
-
   launchConfetti();
 }
 
 function calcParam(idxs){
   let got=0;idxs.forEach(i=>{if(answers[i]&&answers[i].score===1)got++;});
   return Math.round((got/idxs.length)*100);
+}
+
+function calculateScore(){
+  return Math.round((answers.filter(a=>a&&a.score===1).length/19)*100);
+}
+
+function getErrors(){
+  return answers.filter(a=>a&&a.score===0&&a.qIdx<15);
 }
 
 // SAVE TO SERVER
@@ -686,7 +699,7 @@ async function saveResultToServer(pct, badAnswers, loveLetter){
       body:JSON.stringify(payload)
     });
     if(res.ok){
-      document.getElementById('saveStatus').textContent='✅ Nateeja server par save ho gaya! /all-results par dekh sako ge.';
+      document.getElementById('saveStatus').innerHTML='✅ Nateeja server par save ho gaya!';
     }
   }catch(e){
     console.error('Save error:', e);
