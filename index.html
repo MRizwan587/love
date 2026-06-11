@@ -506,11 +506,6 @@ function initCardAnim(num){
   cardAnims[num]=true;
 }
 
-// Initialize animations for ALL cards immediately
-for(let i=1;i<=20;i++){
-  setTimeout(()=>initCardAnim(i), i*50);
-}
-
 // OBSERVER for visibility
 const observer=new IntersectionObserver(entries=>{
   entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');}});
@@ -730,6 +725,15 @@ function launchConfetti(){
     document.body.appendChild(c);setTimeout(()=>c.remove(),5000);
   }
 }
+
+// Initialize animations for ALL cards AFTER DOM is ready
+window.addEventListener('load', ()=>{
+  setTimeout(()=>{
+    for(let i=1;i<=20;i++){
+      setTimeout(()=>initCardAnim(i), i*30);
+    }
+  }, 200);
+});
 </script>
 </body>
 </html>
